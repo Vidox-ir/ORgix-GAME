@@ -23,7 +23,7 @@ function addClue(id,title,text){if(s.foundClues.includes(id))return;s.foundClues
 async function enter(name,restored=null){
  $("startStatus").textContent="در حال آماده‌سازی پرونده...";
  const same=SAVE.token()&&SAVE.name()===name&&!String(SAVE.token()).startsWith("offline-");
- if(!restored&&same){try{const r=await SAVE.load();if(r.save_data?.version===1)restored=r.save_data;online=true;}catch(e){online=false;if(e.status===401)SAVE.clearSession();}}
+ if(!restored&&same){try{const r=await SAVE.load();if(r.save_data?.version===1)restored=r.save_data;online=true;}catch(e){if(e.status===401){online=false;SAVE.clearSession();}else if(e.status===404){online=true;}else online=false;}}
  if(!SAVE.token()||SAVE.name()!==name||(!same&&!restored)){try{await SAVE.join(name);online=true;}catch{online=false;SAVE.setSession("offline-"+Date.now(),name);}}
  const local=SAVE.local();if(!restored&&local?.nickname===name)restored=local;
  s=restored?sanitize(restored,name):fresh(name);if(!s)s=fresh(name);
