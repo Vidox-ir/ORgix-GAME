@@ -6,13 +6,11 @@ A browser-based, single-player pixel-art border mystery. Walk through a remote s
 
 ## Play
 
-The game is a static website. Once GitHub Pages is enabled for this repository, it will be available at:
+The game is published on GitHub Pages:
 
 https://vidox-ir.github.io/ORgix-GAME/
 
-The GitHub Actions workflow checks JavaScript syntax, DOM references, story content and document/decision coverage before publishing.
-
-**One-time hosting setup:** open [Repository Pages settings](https://github.com/Vidox-ir/ORgix-GAME/settings/pages), then in **Build and deployment** set **Source** to **GitHub Actions** and save. The connected GitHub app can push code and run checks, but it cannot create the Pages site itself. After enabling it, open [GitHub Actions](https://github.com/Vidox-ir/ORgix-GAME/actions) and re-run the latest workflow. The first successful Pages deployment creates the public game URL above.
+Latest verified GitHub Actions deployment: [POST 09 — successful build and Pages deploy](https://github.com/Vidox-ir/ORgix-GAME/actions/runs/44760221277). Future pushes to main run the JavaScript, DOM, story-graph and document-decision checks before updating the hosted game.
 
 For local testing, serve the repository root:
 
