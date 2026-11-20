@@ -744,8 +744,13 @@
         const loaded=await API.load();
         remoteSave=loaded.save_data&&loaded.save_data.version===1?loaded.save_data:null;
         onlineMode=true;
-      }catch{
-        API.clearSession();token=null;
+      }catch(error){
+        onlineMode=false;
+        if(error && error.status===401){
+          API.clearSession();token=null;
+        }else{
+          status.textContent="اتصال ابری موقتاً در دسترس نیست؛ پیشرفت روی همین دستگاه ادامه پیدا می‌کند.";
+        }
       }
     }
     if(!API.getToken()||API.getNickname()!==nickname||!sameGuest){
