@@ -1,4 +1,4 @@
-name: Verify and deploy IRONVALE
+name: Verify and deploy POST 09
 
 on:
   push:
@@ -26,7 +26,8 @@ jobs:
           node-version: 22
       - name: Check JavaScript syntax
         run: |
-          node --check game.js
+          node --check borderwatch.js
+          node --check story.js
           node --check backend.js
           node tests/smoke.mjs
   deploy:
