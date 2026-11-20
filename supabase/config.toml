@@ -1,2 +1,5 @@
 [functions.ironvale-guest]
 verify_jwt = false
+
+[functions.borderwatch-guest]
+verify_jwt = false
