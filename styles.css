@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
 :root{color-scheme:dark;--bg:#0e1512;--panel:#16211c;--panel2:#1b2922;--edge:#304137;--edge2:#43584a;--gold:#d6ad68;--gold2:#f0ca83;--cream:#eee7d7;--muted:#91a095;--green:#78a978;--red:#c56f62;--shadow:0 16px 48px #0008;font-family:Vazirmatn, Tahoma, sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--cream)}
