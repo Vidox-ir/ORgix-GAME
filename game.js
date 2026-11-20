@@ -759,10 +759,13 @@
         status.textContent="اتصال ابری در دسترس نیست؛ بازی به‌صورت محلی شروع می‌شود.";
       }
     }
-    if(!remoteSave){
-      const local=API.getLocalSave();
-      if(local&&local.version===1&&local.nickname===nickname&&local.state)remoteSave=local;
+    const local=API.getLocalSave();
+    if(local&&local.version===1&&local.nickname===nickname&&local.state){
+      const localTime=Date.parse(local.savedAt||0)||0;
+      const remoteTime=Date.parse(remoteSave&&remoteSave.savedAt||0)||0;
+      if(!remoteSave||localTime>remoteTime)remoteSave=local;
     }
+    $("eventLog").innerHTML="";
     setGameState(remoteSave&&remoteSave.state?remoteSave.state:null);
     $("playerName").textContent=nickname;
     $("loginScreen").classList.add("is-hidden");
