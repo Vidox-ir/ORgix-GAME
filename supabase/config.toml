@@ -1,0 +1,2 @@
+[functions.ironvale-guest]
+verify_jwt = false
