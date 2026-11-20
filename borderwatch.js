@@ -216,7 +216,7 @@ function finish(){
  $("gameScreen").classList.add("is-hidden");$("inspectionScreen").classList.add("is-hidden");$("endScreen").classList.remove("is-hidden");s.viewMode="end";save(false);
 }
 function pause(){if(!s||s.viewMode==="end")return;s.paused=!s.paused;$("pauseOverlay").classList.toggle("is-hidden",!s.paused);if(scene?.input?.keyboard)scene.input.keyboard.enabled=!s.paused&&s.viewMode==="world";updateHud();}
-function title(){save(false);$("pauseOverlay").classList.add("is-hidden");$("gameScreen").classList.add("is-hidden");$("inspectionScreen").classList.add("is-hidden");$("titleScreen").classList.remove("is-hidden");$("officerName").value=s?.officerName||"";}
+function title(){save(false);if(s){s.paused=true;s.viewMode="title";}if(scene?.input?.keyboard)scene.input.keyboard.enabled=false;$("pauseOverlay").classList.add("is-hidden");$("gameScreen").classList.add("is-hidden");$("inspectionScreen").classList.add("is-hidden");$("titleScreen").classList.remove("is-hidden");$("officerName").value=s?.officerName||"";}
 window.BorderApp={get state(){return s;},get uiLocked(){return ["storyModal","sideModal","pauseOverlay","resultModal","dialogueModal"].some(id=>!$(id).classList.contains("is-hidden"));},interact,setPrompt};
 function bind(){
  $("startForm").onsubmit=e=>{e.preventDefault();const name=$("officerName").value.trim().replace(/\s+/g," ");if(name.length<2||name.length>18){$("startStatus").textContent="نام باید بین ۲ تا ۱۸ نویسه باشد.";return;}enter(name);};
