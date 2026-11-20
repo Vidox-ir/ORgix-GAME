@@ -24,7 +24,11 @@
     });
     let data = {};
     try { data = await response.json(); } catch {}
-    if (!response.ok) throw new Error(data.error || "ارتباط با سرور برقرار نشد.");
+    if (!response.ok) {
+      const error = new Error(data.error || "ارتباط با سرور برقرار نشد.");
+      error.status = response.status;
+      throw error;
+    }
     return data;
   }
 
