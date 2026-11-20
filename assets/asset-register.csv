@@ -1,0 +1,6 @@
+asset,role,source,license,attribution,status
+Border checkpoint environment,side-view location,Original Phaser Graphics code,Original project code,None,Implemented
+Officer and visitor silhouettes,characters,Original Phaser Graphics code,Original project code,None,Implemented
+Passport and desk documents,first-person inspection UI,Original HTML/CSS generated document components,Original project code,None,Implemented
+UI fonts,typography,Google Fonts: Oxanium / JetBrains Mono / Noto Sans Arabic,SIL Open Font License,Google Fonts attribution,Linked external fonts with fallbacks
+Phaser runtime,2D engine,Phaser 4.2.1 via jsDelivr,MIT,Phaser project,External pinned CDN runtime
