@@ -1,6 +1,8 @@
-# IRONVALE — Lords of the Frontier
+# POST 09 — The Last Shift
 
-A browser-based, single-player medieval strategy game inspired by the *genre* of classic castle and settlement builders. It uses original game rules and hand-drawn Canvas artwork; no Stronghold art, maps, sounds, logos, or other commercial game assets are copied.
+**Persian title:** پست ۰۹: آخرین شیفت
+
+A browser-based, single-player pixel-art border mystery. Walk through a remote snowbound checkpoint in side view, inspect passports at a first-person desk, compare official documents and decide who may cross. The story deepens across four night shifts as the radio, old entry ledger and strange visitors reveal that something is collecting the names left behind.
 
 ## Play
 
@@ -8,66 +10,72 @@ The game is a static website. Once GitHub Pages is enabled for this repository, 
 
 https://vidox-ir.github.io/ORgix-GAME/
 
-The repository includes a GitHub Actions workflow that checks the JavaScript and then publishes the root folder on pushes to main.
+The GitHub Actions workflow checks JavaScript syntax, DOM references, story content and document/decision coverage before publishing.
 
-**One-time hosting setup:** open [Repository Pages settings](https://github.com/Vidox-ir/ORgix-GAME/settings/pages), then in **Build and deployment** set **Source** to **GitHub Actions** and save. The connected GitHub app can push code and run checks, but GitHub blocked it from creating the Pages site itself; this one setting must be enabled by the repository owner. After enabling it, open [the latest workflow run](https://github.com/Vidox-ir/ORgix-GAME/actions) and choose **Re-run all jobs**. When the deploy job reports success, the public game URL will be https://vidox-ir.github.io/ORgix-GAME/.
+**One-time hosting setup:** open [Repository Pages settings](https://github.com/Vidox-ir/ORgix-GAME/settings/pages), then in **Build and deployment** set **Source** to **GitHub Actions** and save. The connected GitHub app can push code and run checks, but it cannot create the Pages site itself. After enabling it, open [GitHub Actions](https://github.com/Vidox-ir/ORgix-GAME/actions) and re-run the latest workflow. The first successful Pages deployment creates the public game URL above.
 
-For local testing, serve the repository root with any static web server, for example:
+For local testing, serve the repository root:
 
     python -m http.server 8000
 
-Then open http://localhost:8000.
-
-## Current playable slice
-
-- Isometric 28 × 22 frontier map with grassland, forests, rocky deposits, water and a keep.
-- Resource economy: wood, stone, food and gold.
-- Construction: farms, lumber camps, quarries, market, houses, barracks, walls and archer towers.
-- Guest commander name (no email, password or registration form).
-- Soldiers, enemy raider waves, tower attacks, building damage, morale, population and a 12-day survival objective.
-- Mouse/touch map placement, drag-to-pan, mouse-wheel zoom, WASD/arrow panning, pause and speed controls.
-- Local autosave, cloud save, JSON export/import and offline fallback.
+Then open http://localhost:8000. Phaser 4.2.1 and Google Fonts are loaded from pinned/standard CDNs; an internet connection is needed for those libraries on first launch. The story, UI, art and saves run in the browser.
 
 ## Controls
 
 | Input | Action |
 |---|---|
-| Click a build card, then a map tile | Place a building |
-| Drag on map | Pan camera |
-| Mouse wheel | Zoom |
-| WASD / arrow keys | Pan camera |
-| Space | Pause / resume |
-| Esc | Cancel current build or attack order |
-| Attack button, then map tile | Move the army to a location |
+| A / D or ← / → | Walk left and right |
+| E | Interact with the nearby station object |
+| J or Space | Jump |
+| Escape | Pause |
+| Mouse / touch | Select fields and decisions in the document desk UI |
 
-## Supabase
+## Core gameplay
 
-Cloud saves are backed by the Supabase project GAME-orgix.
+- Side-view exploration of the interior of a remote snowy border station.
+- Five interactable areas: visitor window, radio, regulation board, generator and evidence locker.
+- First-person document desk: passport, entry declaration, permit/visa and daily rules.
+- Compare names, passport numbers, dates of birth, nationality, expiry, destination, permit number, portrait and guardian details.
+- Mark discrepancies, question the visitor, then choose admit, refuse or hold.
+- Seven authored visitor files over four shifts, each with dialogue, document data and a result for all three decisions.
+- Trust, suspicion and clue variables influence the final story.
+- Four endings, including an evidence-led ending for careful investigation.
+- Local browser save plus an optional Supabase guest save.
 
-- SQL migration: supabase/migrations/20261120120000_ironvale_guest_game_backend.sql
-- Edge Function: supabase/functions/ironvale-guest/index.ts
-- Function name: ironvale-guest
-- The function uses the server-side secret key only inside Edge Functions. The browser contains only the project publishable key.
-- Public table access is revoked; game data is accessed by the Edge Function using the service role. Session tokens are randomly generated and stored only as SHA-256 hashes in the database.
-- Requests have per-IP rate limits, strict nickname validation and save-size limits.
+## Supabase guest saves
 
-No conventional account is created. A long random guest token is kept in the browser to reconnect to the same save. **Clearing browser site data, switching browsers or changing devices can make that guest save unrecoverable.** Use Export Save to keep a portable backup. If the Supabase connection is unavailable, the game continues with local storage.
+Cloud saves use the connected Supabase project GAME-orgix and the borderwatch-guest Edge Function.
 
-## Structure
+- Schema migration: supabase/migrations/20261120135000_borderwatch_guest_save.sql
+- Edge Function: supabase/functions/borderwatch-guest/index.ts
+- Browser uses only the project's publishable API key.
+- Service-role access stays inside the Edge Function. Guest tokens are random and stored only as SHA-256 hashes.
+- Player and session tables have RLS enabled; public roles cannot read or write player data.
+- Rate limits, nickname validation, token expiry and save-size limits are applied.
 
-    .
-    ├── index.html
-    ├── styles.css
-    ├── backend.js
-    ├── game.js
-    ├── supabase/
-    │   ├── config.toml
-    │   ├── migrations/
-    │   └── functions/ironvale-guest/index.ts
-    └── .github/workflows/pages.yml
+No email or password is required. The guest token is kept in the browser to reconnect to the same save. Clearing browser site data or switching browsers can make that guest save unrecoverable; use a browser backup before clearing storage.
 
-## Technical notes
+## Project structure
 
-- Runtime: browser-native JavaScript + Canvas 2D; no local install or build step.
-- All map terrain and building illustrations are generated in code, so there are no third-party art or sound assets to download.
-- This is an early playable vertical slice, not a finished commercial-scale RTS. The first release focuses on settlement building, resource management and a compact PvE siege loop. Advanced pathfinding, diplomacy, multiplayer and a campaign editor are future systems.
+    index.html
+    styles.css
+    borderwatch.js
+    story.js
+    backend.js
+    supabase/
+      config.toml
+      migrations/
+      functions/borderwatch-guest/index.ts
+    docs/
+      game-design.md
+      story-branches.md
+    assets/asset-register.csv
+    tests/smoke.mjs
+    .github/workflows/pages.yml
+
+## Engine and art
+
+- Phaser 4.2.1 for the side-view world and pixel rendering.
+- Original station environment and character silhouettes drawn in code; no commercial game sprites, maps, story text or soundtrack are copied.
+- Display: Oxanium; document serials: JetBrains Mono; Persian UI: Noto Sans Arabic.
+- The game is an early playable narrative slice, not yet a fully human-playtested commercial release. See docs/game-design.md for scope and docs/story-branches.md for decisions/endings.
