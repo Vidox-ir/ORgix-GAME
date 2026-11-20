@@ -3,173 +3,152 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#111a17">
-  <meta name="description" content="IRONVALE — یک بازی استراتژی قرون‌وسطایی با ساخت‌وساز، اقتصاد و نبرد.">
-  <title>IRONVALE — Lords of the Frontier</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23121c18'/%3E%3Cpath d='M10 48 32 8 54 48H42L32 29 22 48Z' fill='%23d6ad68'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0a1018">
+  <meta name="description" content="پست ۰۹: آخرین شیفت — بازی داستانی پیکسلی در یک مرزبانی دورافتاده.">
+  <title>پست ۰۹ | آخرین شیفت</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%230d1723'/%3E%3Cpath d='M8 48V18h48v30z' fill='%236b8190'/%3E%3Cpath d='M15 26h34v15H15z' fill='%23d9b27b'/%3E%3Cpath d='M22 48V33h20v15' fill='%23212a31'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Oxanium:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/[email protected]/dist/phaser.min.js"></script>
   <script defer src="./backend.js"></script>
+  <script defer src="./story.js"></script>
   <script defer src="./game.js"></script>
 </head>
 <body>
-  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
-
-  <section id="loginScreen" class="login-screen">
-    <div class="login-art">
-      <div class="login-emblem"><span>IV</span></div>
-      <div class="login-title">IRONVALE</div>
-      <div class="login-subtitle">LORDS OF THE FRONTIER</div>
-      <div class="login-rule"><i></i><span>THE AGE OF IRON BEGINS</span><i></i></div>
-      <div class="login-landscape">
-        <div class="mountain mountain-back"></div>
-        <div class="mountain mountain-front"></div>
-        <div class="castle-silhouette">
-          <b></b><b></b><b></b><i></i><i></i><em></em>
-        </div>
-        <div class="login-ground"></div>
-      </div>
+  <div class="grain"></div>
+  <section id="titleScreen" class="title-screen">
+    <div class="title-backdrop">
+      <div class="title-moon"></div><div class="title-mountain m1"></div><div class="title-mountain m2"></div><div class="title-mountain m3"></div>
+      <div class="title-station"><div class="station-roof"></div><div class="station-window"></div><div class="station-door"></div><div class="station-sign">POST 09</div></div>
+      <div class="title-snow"></div><div class="title-signal">۰۱:۱۳</div>
     </div>
-    <div class="login-card">
-      <div class="eyebrow">فرمانده، سرزمین در انتظار توست</div>
-      <h1>قلمرو خودت را بنا کن</h1>
-      <p class="login-copy">از یک دژ کوچک شروع کن؛ منابع را مدیریت کن، روستا بساز و در برابر یورش راهزنان دوام بیاور.</p>
-      <form id="joinForm" autocomplete="off">
-        <label for="nickname">نام فرمانده</label>
-        <div class="name-field"><span class="name-icon">♜</span><input id="nickname" name="nickname" minlength="2" maxlength="18" placeholder="نامت را وارد کن..." required spellcheck="false"></div>
-        <div class="input-note">بدون ایمیل و رمز عبور؛ فقط نام دلخواهت</div>
-        <button id="joinButton" class="primary-button" type="submit"><span>ورود به قلمرو</span><b>←</b></button>
+    <div class="title-copy">
+      <div class="title-overline"><span class="signal-light"></span> پروندهٔ محرمانه · ادارهٔ مرزبانی</div>
+      <h1>پُست <em>۰۹</em></h1>
+      <h2>آخرین شیفت</h2>
+      <p class="title-english">THE LAST SHIFT</p>
+      <div class="title-rule"></div>
+      <p class="title-description">چهار شب در مرزبانیِ دورافتادهٔ سپیدار. مدارک را بررسی کن، دربارهٔ آدم‌ها تصمیم بگیر و مراقب صدایی باش که از کوه جواب می‌دهد.</p>
+      <form id="startForm" class="start-form">
+        <label for="officerName">نام مأمور شیفت</label>
+        <input id="officerName" maxlength="18" minlength="2" placeholder="نام خودت را وارد کن..." required autocomplete="off">
+        <button class="btn btn-gold" type="submit"><span>شروع آخرین شیفت</span><b>←</b></button>
       </form>
-      <div id="loginStatus" class="login-status" role="status">ذخیرهٔ ابری فعال است؛ در صورت قطع اتصال، بازی محلی ادامه پیدا می‌کند.</div>
-      <div class="login-foot"><span class="online-dot"></span> SINGLE PLAYER · GUEST MODE</div>
+      <div id="startStatus" class="start-status">بدون ثبت‌نام · ذخیرهٔ محلی و ابری</div>
+      <button id="continueBtn" class="continue-btn is-hidden" type="button">ادامهٔ پروندهٔ ذخیره‌شده</button>
     </div>
-    <div class="login-version">IRONVALE <span>PRE-RELEASE 0.1</span></div>
+    <div class="title-bottom"><span>FICTIONAL BORDER AUTHORITY</span><span>CHAPTER 01 — 04</span><span>PIXEL NARRATIVE EXPERIENCE</span></div>
   </section>
 
-  <div id="gameShell" class="game-shell is-hidden">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-crest">IV</div>
-        <div><strong>IRONVALE</strong><small>LORDS OF THE FRONTIER</small></div>
+  <main id="gameScreen" class="game-screen is-hidden">
+    <header class="hud">
+      <div class="hud-brand"><div class="hud-emblem">09</div><div><strong>سپیدار</strong><small>مرزبانی کوهستانی</small></div></div>
+      <div class="hud-shift"><small>شیفت جاری</small><b id="shiftLabel">۱ / ۴</b><span id="dateLabel">۱۸ دی ۱۴۰۸</span></div>
+      <div class="hud-signals">
+        <div class="signal"><span class="signal-icon trust-icon">✦</span><div><small>اعتماد</small><b id="trustValue">۰</b></div></div>
+        <div class="signal"><span class="signal-icon suspicion-icon">◉</span><div><small>بدگمانی</small><b id="suspicionValue">۰</b></div></div>
+        <div class="signal"><span class="signal-icon clue-icon">▤</span><div><small>سرنخ‌ها</small><b id="clueValue">۰</b></div></div>
       </div>
-      <div class="realm-meta"><span class="realm-label">قلمرو فرمانده</span><strong id="playerName">—</strong></div>
-      <div class="day-block"><span>روز</span><strong id="dayValue">۱</strong><small id="phaseValue">سپیده‌دم</small></div>
-      <div class="resource-strip">
-        <div class="resource" title="چوب"><span class="resource-icon wood">▰</span><div><small>چوب</small><b id="woodValue">180</b></div></div>
-        <div class="resource" title="سنگ"><span class="resource-icon stone">◆</span><div><small>سنگ</small><b id="stoneValue">120</b></div></div>
-        <div class="resource" title="آذوقه"><span class="resource-icon food">✣</span><div><small>آذوقه</small><b id="foodValue">170</b></div></div>
-        <div class="resource" title="طلا"><span class="resource-icon gold">◉</span><div><small>طلا</small><b id="goldValue">200</b></div></div>
-      </div>
-      <div class="top-actions">
-        <button id="saveButton" class="icon-button" title="ذخیرهٔ بازی">⇧</button>
-        <button id="helpButton" class="icon-button" title="راهنما">?</button>
-        <button id="pauseButton" class="icon-button" title="توقف">Ⅱ</button>
-        <button id="speedButton" class="speed-button" title="سرعت بازی">۱×</button>
+      <div class="hud-actions">
+        <button id="journalBtn" class="hud-icon" title="دفترچه">▤</button>
+        <button id="rulesBtn" class="hud-icon" title="قوانین امروز">§</button>
+        <button id="pauseBtn" class="hud-icon" title="توقف">Ⅱ</button>
       </div>
     </header>
 
-    <main class="game-layout">
-      <aside class="side-panel build-panel">
-        <div class="panel-heading"><div><span class="eyebrow">گسترش قلمرو</span><h2>ساخت‌وساز</h2></div><span class="heading-mark">✦</span></div>
-        <div class="panel-scroll">
-          <div class="build-section">
-            <div class="section-label">اقتصاد و تولید</div>
-            <button class="build-card" data-build="farm"><span class="build-icon farm-icon">▤</span><span class="build-copy"><b>مزرعه</b><small>تولید آذوقه</small></span><span class="cost">55 <i>چوب</i></span></button>
-            <button class="build-card" data-build="lumber"><span class="build-icon lumber-icon">⌁</span><span class="build-copy"><b>اردوگاه چوب‌بری</b><small>تولید چوب · کنار جنگل</small></span><span class="cost">50 <i>چوب</i></span></button>
-            <button class="build-card" data-build="quarry"><span class="build-icon quarry-icon">⬡</span><span class="build-copy"><b>معدن سنگ</b><small>تولید سنگ · روی صخره</small></span><span class="cost">50 <i>چوب</i></span></button>
-            <button class="build-card" data-build="market"><span class="build-icon market-icon">⌂</span><span class="build-copy"><b>بازارچه</b><small>درآمد طلا</small></span><span class="cost">70 <i>چوب</i> · 50 <i>سنگ</i></span></button>
-          </div>
-          <div class="build-section">
-            <div class="section-label">سکونت و ارتش</div>
-            <button class="build-card" data-build="house"><span class="build-icon house-icon">⌂</span><span class="build-copy"><b>خانه</b><small>افزایش ظرفیت جمعیت</small></span><span class="cost">65 <i>چوب</i></span></button>
-            <button class="build-card" data-build="barracks"><span class="build-icon barracks-icon">⚑</span><span class="build-copy"><b>پادگان</b><small>آموزش سرباز</small></span><span class="cost">95 <i>چوب</i> · 55 <i>سنگ</i></span></button>
-          </div>
-          <div class="build-section">
-            <div class="section-label">استحکامات دفاعی</div>
-            <button class="build-card" data-build="wall"><span class="build-icon wall-icon">▥</span><span class="build-copy"><b>دیوار سنگی</b><small>مانع عبور دشمن</small></span><span class="cost">8 <i>چوب</i> · 12 <i>سنگ</i></span></button>
-            <button class="build-card" data-build="tower"><span class="build-icon tower-icon">♜</span><span class="build-copy"><b>برج کمانداری</b><small>حملهٔ خودکار از دور</small></span><span class="cost">70 <i>چوب</i> · 70 <i>سنگ</i></span></button>
-          </div>
-          <div class="build-tip"><span>✦</span><p>برای ساخت، سازه را انتخاب کن و سپس روی یک خانهٔ خالی نقشه کلیک کن. <kbd>Esc</kbd> برای لغو.</p></div>
-        </div>
-      </aside>
-
-      <section class="world-column">
-        <div class="world-topline">
-          <div class="world-location"><span class="location-pin">⌖</span><div><b>دشت خاکستر</b><small>مرزهای شمالی · سرزمین آزاد</small></div></div>
-          <div class="world-status"><span id="weatherLabel">هوای آرام</span><i></i><span id="populationValue">جمعیت ۲۰ / ۲۸</span></div>
-        </div>
-        <div class="world-frame">
-          <canvas id="worldCanvas" aria-label="نقشهٔ ایزومتریک قلمرو"></canvas>
-          <div id="worldBadge" class="world-badge">منطقهٔ امن · روزهای آغازین</div>
-          <div id="pauseBanner" class="pause-banner is-hidden"><b>Ⅱ</b><span>بازی متوقف است</span><small>برای ادامه، Space یا دکمهٔ توقف را بزن</small></div>
-          <div class="canvas-controls"><span>حرکت: WASD</span><i></i><span>زوم: چرخ ماوس</span><i></i><span>جابجایی نقشه: درگ</span></div>
-        </div>
-        <div class="world-footer">
-          <div class="selection-summary"><span class="selection-gem">◇</span><span id="selectionHint">یک خانه یا سازه را برای مشاهدهٔ جزئیات انتخاب کن</span></div>
-          <div class="world-coords" id="coordValue">X — · Y —</div>
-        </div>
-      </section>
-
-      <aside class="side-panel info-panel">
-        <div class="panel-heading"><div><span class="eyebrow">فرماندهی</span><h2>وضعیت قلمرو</h2></div><span class="morale-ring" id="moraleRing"><b id="moraleValue">۸۵</b></span></div>
-        <div class="panel-scroll">
-          <section class="status-card">
-            <div class="status-head"><span>روحیهٔ مردم</span><b id="moraleLabel">شاداب</b></div>
-            <div class="meter"><i id="moraleMeter" style="width:85%"></i></div>
-            <div class="status-foot"><span>جمعیت</span><b id="peopleValue">۲۰ نفر</b></div>
-            <div class="status-foot"><span>نیروی نظامی</span><b id="armyValue">۰ سرباز</b></div>
-          </section>
-          <section id="selectionPanel" class="selection-panel">
-            <div class="empty-selection"><span>⌖</span><b>هیچ سازه‌ای انتخاب نشده</b><small>روی نقشه یک ساختمان را انتخاب کن تا آمار و فرمان‌های آن نمایش داده شود.</small></div>
-          </section>
-          <section class="quest-card">
-            <div class="section-label">هدف فرمانده</div>
-            <div class="quest-title"><span>✦</span><b id="objectiveTitle">پایه‌های یک قلمرو</b></div>
-            <p id="objectiveText">اقتصاد خود را گسترش بده و تا روز دوازدهم از دژ محافظت کن.</p>
-            <div class="quest-progress"><i id="objectiveProgress" style="width:18%"></i></div>
-            <small id="objectiveMeta">۰ از ۳ سازهٔ اقتصادی</small>
-          </section>
-          <section class="event-card">
-            <div class="section-label">گزارش دیده‌بان</div>
-            <div id="eventLog" class="event-log"><div class="log-line"><i></i><span>فرمانده وارد دژ شده است.</span></div></div>
-          </section>
-        </div>
-      </aside>
-    </main>
-
-    <footer class="commandbar">
-      <div class="command-group">
-        <button class="command-button command-primary" id="attackButton"><span class="command-symbol">⚔</span><span><b>فرمان حمله</b><small>تعیین نقطهٔ حرکت</small></span></button>
-        <button class="command-button" id="recruitButton"><span class="command-symbol">♟</span><span><b>استخدام سرباز</b><small>۲۰ طلا · ۸ آذوقه</small></span></button>
-        <button class="command-button" id="tradeButton"><span class="command-symbol">⇄</span><span><b>تجارت</b><small>۴۰ آذوقه ← ۲۵ طلا</small></span></button>
+    <section class="game-stage">
+      <div class="stage-topline"><div class="scene-name"><span class="scene-dot"></span><strong id="sceneTitle">محوطهٔ پاسگاه</strong><small id="sceneHint">راه برو و با اشیای اطراف تعامل کن</small></div><div class="clock"><span>زمان محلی</span><b id="clockValue">۰۰:۰۱</b></div></div>
+      <div id="gameViewport" class="game-viewport">
+        <div id="phaserMount"></div>
+        <div class="viewport-vignette"></div>
+        <div class="weather-overlay"></div>
+        <div id="interactionPrompt" class="interaction-prompt is-hidden"><kbd>E</kbd><span id="interactionText">تعامل</span></div>
+        <div class="viewport-caption">W A S D / ← → حرکت <i>·</i> E تعامل <i>·</i> J پرش</div>
       </div>
-      <div class="command-divider"></div>
-      <div class="command-group command-tools">
-        <button id="soundButton" class="tool-button" title="صدا">♫</button>
-        <button id="exportButton" class="tool-button" title="دریافت فایل ذخیره">⇩</button>
-        <label class="tool-button import-button" title="بارگذاری ذخیره">⇧<input id="importInput" type="file" accept="application/json,.json"></label>
-        <button id="exitButton" class="tool-button" title="بازگشت به صفحهٔ ورود">↩</button>
-      </div>
-      <div class="save-state"><span id="saveDot"></span><span id="saveText">ذخیرهٔ خودکار فعال</span></div>
+      <div class="stage-footer"><span id="worldNarration">باد از لای قاب پنجره عبور می‌کند.</span><div class="sound-controls"><button id="soundBtn" class="sound-btn" title="صدا">♫</button><button id="saveBtn" class="sound-btn" title="ذخیره">⇧</button></div></div>
+    </section>
+    <footer class="bottom-bar">
+      <div class="case-progress"><small>مراجعه‌کننده‌ها</small><div id="caseDots" class="case-dots"></div><span id="caseCount">۰ از ۷</span></div>
+      <div class="bottom-objective"><span class="objective-mark">✦</span><div><small>وظیفهٔ تو</small><b id="objectiveText">به پنجرهٔ بررسی برو و اولین مراجعه‌کننده را ببین.</b></div></div>
+      <div class="radio-state"><span class="radio-led"></span><div><small>رادیو</small><b id="radioStatus">آماده‌به‌کار</b></div></div>
     </footer>
+  </main>
+
+  <section id="inspectionScreen" class="inspection-screen is-hidden" aria-label="بررسی مدارک مراجعه‌کننده">
+    <header class="inspection-header">
+      <div class="inspection-brand"><span class="inspection-stamp">۰۹</span><div><b>میز بررسی گذرنامه</b><small>IMMIGRATION CONTROL · DESK VIEW</small></div></div>
+      <div class="inspection-visitor"><span id="visitorNameHead">—</span><small id="visitorRoleHead">—</small></div>
+      <div class="inspection-tools"><span id="caseClock">۰۱:۱۳</span><button id="closeInspection" class="quiet-btn" title="بازگشت">×</button></div>
+    </header>
+    <div class="inspection-content">
+      <div class="desk-intro"><div class="desk-lamp"></div><div><small>پروندهٔ جاری</small><h2 id="caseHeading">مراجعه‌کنندهٔ شماره ۰۱</h2><p id="caseTagline">—</p></div><div class="case-code" id="caseCode">BW-01</div></div>
+      <div class="document-grid">
+        <article class="paper passport-paper">
+          <div class="paper-top"><span>جمهوری آرمان</span><b>گذرنامه / PASSPORT</b><span class="passport-seal">✦</span></div>
+          <div class="passport-main"><div class="passport-photo" id="passportPortrait"><div class="portrait-head"></div><div class="portrait-body"></div></div><div class="passport-fields" id="passportFields"></div></div>
+          <div class="mrz" id="mrzText">P&lt;ARMAN&lt;&lt;—</div>
+          <div class="paper-caption">سند شمارهٔ یک · اصل گذرنامه</div>
+        </article>
+        <article class="paper form-paper">
+          <div class="paper-top"><span>ادارهٔ گذرگاه‌های مرزی</span><b>فرم اظهار ورود</b><span class="form-seal">۰۹</span></div>
+          <div class="form-fields" id="formFields"></div>
+          <div class="form-sign"><span>امضای متقاضی</span><b id="formSignature">—</b></div>
+          <div class="paper-caption">سند شمارهٔ دو · فرم مراجعه‌کننده</div>
+        </article>
+        <article class="paper visa-paper">
+          <div class="paper-top"><span>مجوز عبور</span><b>PERMIT / VISA</b></div>
+          <div id="visaFields" class="visa-fields"></div>
+          <div class="visa-barcode">▥ ▥ ▤ ▥ ▤ ▥ ▥ ▤ ▥</div>
+          <div class="paper-caption">سند شمارهٔ سه · مجوز و مهرها</div>
+        </article>
+        <article class="paper rules-paper">
+          <div class="paper-top"><span>ابلاغیهٔ روز</span><b>REGULATION ۰۹</b></div>
+          <div id="ruleFields" class="rule-fields"></div>
+          <div class="rules-warning">هر مغایرت باید پیش از صدور مهر ثبت شود.</div>
+          <div class="paper-caption">دفترچهٔ قوانین شیفت</div>
+        </article>
+      </div>
+      <div class="compare-panel">
+        <div class="compare-heading"><div><small>مقایسهٔ اطلاعات</small><b>موارد مشکوک را مشخص کن</b></div><span id="compareCount">۰ مغایرت ثبت شده</span></div>
+        <div id="compareRows" class="compare-rows"></div>
+      </div>
+    </div>
+    <footer class="inspection-footer">
+      <button id="interviewBtn" class="btn btn-dark">◌ پرسش از مراجعه‌کننده</button>
+      <div class="decision-hint" id="decisionHint">اطلاعات را تطبیق بده و سپس تصمیم بگیر.</div>
+      <div class="decision-buttons">
+        <button id="denyBtn" class="decision-btn deny-btn"><b>✕</b><span>رد ورود</span></button>
+        <button id="holdBtn" class="decision-btn hold-btn"><b>Ⅱ</b><span>تعلیق / بررسی</span></button>
+        <button id="admitBtn" class="decision-btn admit-btn"><b>✓</b><span>مجاز / ورود</span></button>
+      </div>
+    </footer>
+  </section>
+
+  <div id="dialogueModal" class="overlay is-hidden" role="dialog" aria-modal="true">
+    <div class="dialogue-card"><div class="dialogue-header"><span>گفت‌وگوی پنجره</span><button data-close-dialog>×</button></div><div class="dialogue-person"><div class="dialogue-avatar" id="dialogueAvatar"></div><div><b id="dialoguePerson">—</b><small id="dialogueQuestion">—</small></div></div><div id="dialogueChoices" class="dialogue-choices"></div><p id="dialogueReply" class="dialogue-reply is-hidden"></p><button id="dialogueDone" class="btn btn-gold is-hidden">بازگشت به بررسی</button></div>
+  </div>
+
+  <div id="resultModal" class="overlay is-hidden" role="dialog" aria-modal="true">
+    <div class="result-card"><div class="result-seal" id="resultSeal">✦</div><small>ثبت تصمیم در دفتر روزانه</small><h2 id="resultTitle">تصمیم ثبت شد</h2><p id="resultText">—</p><div class="result-impact" id="resultImpact"></div><button id="nextCaseBtn" class="btn btn-gold">مراجعه‌کنندهٔ بعدی ←</button></div>
+  </div>
+
+  <div id="storyModal" class="overlay is-hidden" role="dialog" aria-modal="true">
+    <div class="story-card"><div class="story-kicker" id="storyKicker">گزارش شیفت</div><h2 id="storyTitle">—</h2><p id="storyText">—</p><div id="storyChoices" class="story-choices"></div><button id="storyContinue" class="btn btn-gold is-hidden">ادامه</button></div>
+  </div>
+
+  <div id="sideModal" class="overlay is-hidden" role="dialog" aria-modal="true">
+    <div class="side-card"><div class="side-card-head"><div><small id="sideKicker">دفتر</small><h2 id="sideTitle">دفترچهٔ مأمور</h2></div><button id="sideClose">×</button></div><div id="sideContent" class="side-content"></div></div>
+  </div>
+
+  <div id="endScreen" class="end-screen is-hidden">
+    <div class="end-noise"></div><div class="end-card"><div class="end-symbol" id="endSymbol">✦</div><small>پروندهٔ پست ۰۹ بسته شد</small><h1 id="endTitle">سپیده‌دم</h1><p id="endText">—</p><div id="endStats" class="end-stats"></div><button id="restartBtn" class="btn btn-gold">شروع پروندهٔ تازه</button></div>
   </div>
 
   <div id="toast" class="toast" role="status"></div>
-  <div id="helpModal" class="modal is-hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-    <div class="modal-card">
-      <button class="modal-close" data-close-modal aria-label="بستن">×</button>
-      <span class="eyebrow">راهنمای فرمانده</span><h2 id="helpTitle">چگونه بر دشت خاکستر فرمانروایی کنی؟</h2>
-      <div class="help-grid">
-        <div><b>۱. اقتصاد</b><p>مزرعه آذوقه، اردوگاه جنگلی چوب، معدن سنگ و بازارچه طلا تولید می‌کنند. تولید در پایان هر روز انجام می‌شود.</p></div>
-        <div><b>۲. ساخت‌وساز</b><p>از ستون سمت راست سازه را انتخاب کن. اردوگاه چوب‌بری فقط روی جنگل و معدن فقط روی صخره ساخته می‌شود.</p></div>
-        <div><b>۳. دفاع</b><p>پادگان بساز و سرباز استخدام کن. برج‌ها خودکار به دشمن نزدیک حمله می‌کنند؛ دیوارها مسیر یورش را کند می‌کنند.</p></div>
-        <div><b>۴. پیروزی</b><p>تا پایان روز دوازدهم از دژ زنده بمان. نابودی دژ یا سقوط روحیهٔ مردم به صفر یعنی شکست.</p></div>
-      </div>
-      <div class="help-controls"><span><kbd>W A S D</kbd> حرکت نقشه</span><span><kbd>Space</kbd> توقف</span><span><kbd>Esc</kbd> لغو فرمان</span><span>چرخ ماوس: زوم</span></div>
-      <button class="primary-button modal-ok" data-close-modal>متوجه شدم</button>
-    </div>
-  </div>
-  <div id="resultModal" class="modal is-hidden" role="dialog" aria-modal="true">
-    <div class="modal-card result-card"><div id="resultIcon" class="result-icon">♜</div><span class="eyebrow">پایان نبرد</span><h2 id="resultTitle">قلمرو پابرجاست</h2><p id="resultText"></p><div class="result-stats" id="resultStats"></div><button id="restartButton" class="primary-button">شروع قلمرو تازه</button></div>
+  <div id="pauseOverlay" class="pause-overlay is-hidden">
+    <div class="pause-card"><small>SHIFT PAUSED</small><h2>مکث در شیفت</h2><button id="resumeBtn" class="btn btn-gold">ادامهٔ کار</button><button id="titleBtn" class="quiet-btn">بازگشت به عنوان</button></div>
   </div>
 </body>
 </html>
