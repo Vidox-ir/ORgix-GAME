@@ -2,7 +2,7 @@
 "use strict";
 const $=id=>document.getElementById(id), STORY=window.BORDER_STORY, SAVE=window.BorderSave;
 const fa=n=>String(n).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[+d]), clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-let s=null, game=null, scene=null, visitor=null, online=false, busy=false, toastTimer=0, saveTimer=0, soundOn=true, audio=null, nextStory=null, afterResult=false;
+let s=null, game=null, scene=null, visitor=null, online=false, busy=false, toastTimer=0, saveTimer=0, soundOn=true, audio=null, ambient=null, nextStory=null, afterResult=false;
 const compareDefs=[
  {key:"name",label:"نام",kind:"passport"},{key:"number",label:"شمارهٔ گذرنامه",kind:"passport"},
  {key:"birth",label:"تاریخ تولد",kind:"passport"},{key:"nationality",label:"ملیت",kind:"passport"},
@@ -12,7 +12,7 @@ const compareDefs=[
 ];
 function fresh(name){const badge="OFF-"+(1000+Math.floor(Math.random()*8999));return {version:1,officerName:name,badge,birth:"1994/07/22",caseIndex:0,shift:1,viewMode:"world",paused:false,trust:0,suspicion:0,clues:0,admitted:0,denied:0,held:0,decisions:[],foundClues:[],journal:[{title:"ابلاغ آغاز مأموریت",text:"پست مرزی سپیدار به علت بارش سنگین از مسیر اصلی جدا شده است. شیفت شب را تا اطلاع بعدی ادامه بده."}],items:[{name:"چراغ‌قوهٔ جیبی",description:"باتری نیمه‌پر؛ برای بررسی محوطه."},{name:"دفتر ثبت ورود",description:"تمام تصمیم‌ها در آن نوشته می‌شود."},{name:"کارت مأمور",description:"کد: "+badge}],power:true,radioOff:false,visited:{desk:false},marked:{},interviewed:false,interviewDecision:null,interviewChoice:null,finalDecision:null};}
 function toast(msg,bad=false){const el=$("toast");el.textContent=msg;el.classList.toggle("bad",bad);el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2500);}
-function beep(freq=480){if(!soundOn)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type="triangle";o.frequency.value=freq;g.gain.setValueAtTime(.025,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.12);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.13);}catch{}}
+function startAmbient(){if(!soundOn||ambient)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();const buffer=audio.createBuffer(1,audio.sampleRate*2,audio.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.12;const source=audio.createBufferSource(),filter=audio.createBiquadFilter(),gain=audio.createGain();source.buffer=buffer;source.loop=true;filter.type="lowpass";filter.frequency.value=340;gain.gain.value=.012;source.connect(filter);filter.connect(gain);gain.connect(audio.destination);source.start();ambient={source,gain};}catch{}}\nfunction stopAmbient(){if(!ambient)return;try{ambient.gain.gain.setTargetAtTime(0,audio.currentTime,.08);ambient.source.stop(audio.currentTime+.35);}catch{}ambient=null;}\nfunction beep(freq=480){if(!soundOn)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type="triangle";o.frequency.value=freq;g.gain.setValueAtTime(.025,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.12);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.13);}catch{}}
 function playerCase(){if(!s||s.caseIndex>=STORY.cases.length)return null;const c=JSON.parse(JSON.stringify(STORY.cases[s.caseIndex]));const rep=v=>typeof v==="string"?v.replaceAll("__PLAYER__",s.officerName).replaceAll("__BADGE__",s.badge).replaceAll("__DOB__",s.birth):v;for(const sec of ["passport","form","visa"])for(const k of Object.keys(c[sec]||{}))c[sec][k]=rep(c[sec][k]);return c;}
 function pack(){return {version:1,nickname:s.officerName,savedAt:new Date().toISOString(),state:s};}
 function saveSoon(){if(!s)return;SAVE.setLocal(pack());clearTimeout(saveTimer);saveTimer=setTimeout(()=>save(false),1500);}
@@ -90,6 +90,13 @@ function createGame(){
    if(type==="officer"||type==="commander"){this.rect(g,px-13,py-89,26,6,"#1b2a38");this.rect(g,px-7,py-95,15,8,"#263b4a");this.rect(g,px+4,py-89,13,3,"#d1b173");}
    else if(type==="mystery"||ghost){this.rect(g,px-14,py-90,28,16,"#293845");this.rect(g,px-11,py-78,22,13,"#18252f");this.rect(g,px-6,py-72,5,2,"#e8efdc");this.rect(g,px+3,py-72,5,2,"#e8efdc");}
    this.rect(g,px-14,py-59,27,6,scarf);this.rect(g,px+7,py-53,6,14,scarf);if(type==="officer")this.rect(g,px-11,py-49,5,6,"#d5b47d");
+   if(type==="doctor"){this.rect(g,px-12,py-89,24,7,"#d9ded4");this.rect(g,px-4,py-44,9,11,"#9b5a50");this.rect(g,px-8,py-41,17,4,"#9b5a50");}
+   if(type==="shepherd"){this.rect(g,px-9,py-62,19,10,"#e0ddd0");this.rect(g,px+12,py-86,4,66,"#725b43");this.rect(g,px-12,py-91,27,5,"#8b7a66");}
+   if(type==="commander"){this.rect(g,px-14,py-51,8,9,"#d2b16c");this.rect(g,px+8,py-51,8,9,"#d2b16c");this.rect(g,px-1,py-48,4,10,"#c8a36b");}
+   if(type==="courier"){this.rect(g,px-22,py-58,9,30,"#87654a");this.rect(g,px-28,py-55,8,24,"#bd956d");this.rect(g,px+17,py-42,12,12,"#d5c39a");}
+   if(type==="traveler"){this.rect(g,px-22,py-57,9,30,"#675847");this.rect(g,px-27,py-54,8,22,"#88765e");}
+   if(type==="mother"){this.rect(g,px-15,py-91,29,15,"#8b5650");this.rect(g,px-15,py-80,5,17,"#8b5650");this.rect(g,px+10,py-80,5,17,"#8b5650");}
+   if(type==="mystery"){this.rect(g,px-15,py-88,30,28,"#1b2933");this.rect(g,px-7,py-75,5,3,"#e7ecdc");this.rect(g,px+3,py-75,5,3,"#e7ecdc");this.rect(g,px-14,py-59,28,6,"#c8d4d0");}
   }
   prop(x,y,type,active){
    const g=this.fx, edge=active?"#e2c58e":"#617580";
@@ -104,7 +111,7 @@ function createGame(){
    if(!window.BorderApp?.state)return;const app=window.BorderApp,active=s.viewMode==="world"&&!s.paused&&!app.uiLocked,dt=Math.min(delta/1000,.04);
    if(active){if(this.keys.A.isDown||this.keys.LEFT.isDown)this.x-=210*dt;if(this.keys.D.isDown||this.keys.RIGHT.isDown)this.x+=210*dt;this.x=clamp(this.x,30,this.W-35);if(Phaser.Input.Keyboard.JustDown(this.keys.J)&&this.y>=428)this.vy=-330;if(Phaser.Input.Keyboard.JustDown(this.keys.SPACE)&&this.y>=428)this.vy=-330;this.vy+=850*dt;this.y+=this.vy*dt;if(this.y>428){this.y=428;this.vy=0;}if(Phaser.Input.Keyboard.JustDown(this.keys.E)&&this.near)app.interact(this.near);}
    this.cameras.main.scrollX=clamp(this.x-460,0,this.W-960);this.fx.clear();
-   const c=playerCase();if(c&&s.viewMode==="world"&&!s.visited.desk)this.character(this.fx,445,428,c.portrait==="doctor"?"doctor":c.portrait==="shepherd"?"shepherd":c.portrait==="commander"?"commander":["blank","double"].includes(c.portrait)?"mystery":"traveler",Math.floor(time/350)%2);
+   const c=playerCase();if(c&&s.viewMode==="world"&&!s.visited.desk){const look=["blank","double"].includes(c.portrait)?"mystery":c.portrait==="mother"?"mother":c.portrait==="courier"?"courier":c.portrait==="doctor"?"doctor":c.portrait==="shepherd"?"shepherd":c.portrait==="commander"?"commander":"traveler";this.character(this.fx,445,428,look,Math.floor(time/350)%2);}
    this.character(this.fx,this.x,this.y,"officer",Math.floor(time/150)%2);
    this.prop(555,428,"desk",this.near==="desk");this.prop(970,428,"radio",this.near==="radio");this.prop(1230,428,"board",this.near==="board");this.prop(1610,428,"generator",this.near==="generator");this.prop(1900,428,"locker",this.near==="locker");
    this.near=null;
@@ -219,7 +226,7 @@ function bind(){
  $("interviewBtn").onclick=interview;$("dialogueDone").onclick=()=>{$("dialogueModal").classList.add("is-hidden");$("interviewBtn").textContent="✓ گفت‌وگو ثبت شد";$("interviewBtn").disabled=true;$("interviewBtn").style.opacity=".6";$("decisionHint").textContent=s.interviewDecision==="admit"?"مدرک تکمیلی معتبر است؛ می‌توانی ورود را مجاز کنی.":"اطلاعات تازه ثبت شد؛ حالا تصمیم بگیر.";};
  document.querySelectorAll("[data-close-dialog]").forEach(b=>b.onclick=()=>$("dialogueModal").classList.add("is-hidden"));
  $("admitBtn").onclick=()=>decide("admit");$("denyBtn").onclick=()=>decide("deny");$("holdBtn").onclick=()=>decide("hold");$("nextCaseBtn").onclick=next;
- $("soundBtn").onclick=()=>{soundOn=!soundOn;$("soundBtn").textContent=soundOn?"♫":"♪";toast(soundOn?"صدا روشن شد.":"صدا خاموش شد.");};
+ $("soundBtn").onclick=()=>{soundOn=!soundOn;$("soundBtn").textContent=soundOn?"♫":"♪";if(soundOn)startAmbient();else stopAmbient();toast(soundOn?"صدای باد روشن شد.":"صدا خاموش شد.");};
  $("saveBtn").onclick=()=>save(true);
  $("restartBtn").onclick=()=>{const name=s?.officerName||$("officerName").value||"مأمور";s=fresh(name);SAVE.clearSession();SAVE.setLocal(pack());$("endScreen").classList.add("is-hidden");$("titleScreen").classList.remove("is-hidden");$("officerName").value=name;$("continueBtn").classList.add("is-hidden");s=null;};
  document.addEventListener("visibilitychange",()=>{if(document.hidden&&s)save(false);});window.addEventListener("beforeunload",()=>{if(s)SAVE.setLocal(pack());});
