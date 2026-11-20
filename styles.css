@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Oxanium:wght@500;600;700;800&display=swap');
 :root{color-scheme:dark;--night:#09111b;--navy:#101d2b;--panel:#172536;--panel2:#202e3d;--line:#3c5061;--muted:#98a9b6;--paper:#e6ddc5;--paper2:#d7cdae;--ink:#282c30;--gold:#d6ad70;--gold2:#f0ca8e;--red:#aa655e;--green:#6c9877;--cyan:#91b4c1;font-family:"Noto Sans Arabic",Tahoma,sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--night);color:#e4e9e9}
@@ -88,3 +87,36 @@ button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visib
 .document-grid{grid-template-columns:1fr 1fr;gap:6px}.paper{padding:8px 7px 20px;min-height:165px}.paper-top{font-size:6px}.paper-top b{font-size:8px}.paper-caption{font-size:6px;right:7px}.passport-main{gap:5px}.passport-photo{width:55px;height:80px}.portrait-head{left:12px}.portrait-body{left:-1px}.passport-fields{gap:5px}.doc-field label{font-size:6px}.doc-field b{font-size:7px}.form-fields{gap:8px 5px;padding:9px 0 4px}.form-fields .doc-field b{font-size:7px}.visa-fields{padding:9px 0;gap:7px}.visa-fields .doc-field b{font-size:8px}.visa-barcode{font-size:13px}.rule-fields{gap:5px;padding:7px 0}.rule-item{font-size:7px}.rules-warning{font-size:7px;padding:4px}.mrz{font-size:6px;margin-top:5px}
 .compare-panel{padding:7px;margin-top:7px}.compare-heading{margin-bottom:5px}.compare-heading b{font-size:8px}.compare-heading>span{font-size:7px}.compare-rows{gap:4px}.compare-row{padding:4px 5px;gap:4px}.compare-row small{font-size:6px}.compare-row b{font-size:7px}.compare-toggle{font-size:6px;padding:4px}.inspection-footer{padding:6px;gap:5px;min-height:61px}.decision-hint{font-size:7px}.decision-buttons{width:100%;gap:4px}.decision-btn{flex:1;min-width:0;height:35px;gap:4px;font-size:8px}.decision-btn b{font-size:10px}.inspection-footer>.btn{height:32px;font-size:8px;padding:0 9px}
 .dialogue-card,.result-card,.story-card,.side-card{padding:17px}.result-card h2,.story-card h2{font-size:16px}.result-card p,.story-card p{font-size:10px}.end-card{padding:28px 18px}.end-card h1{font-size:25px}.end-card p{font-size:10px}.end-stats{gap:8px;font-size:8px}.interaction-prompt{bottom:52px}.viewport-caption{font-size:6px}}
+
+
+/* Character portrait variants for the first-person document desk */
+.passport-photo .portrait-head{background:#c79b7d;z-index:2;box-shadow:-7px 4px 0 -3px #423a34,7px 4px 0 -3px #423a34}
+.passport-photo .portrait-body{background:#354757;z-index:1}
+.passport-photo .portrait-hair{position:absolute;z-index:3;left:18px;top:10px;width:37px;height:14px;background:#3a302b;clip-path:polygon(0 100%,8% 20%,34% 0,76% 4%,100% 60%,92% 100%)}
+.portrait-doctor{background:linear-gradient(145deg,#9aaea9,#526c72)}
+.portrait-doctor .portrait-head{background:#d6ae8e;box-shadow:-7px 2px 0 -3px #d9d8cf,7px 2px 0 -3px #d9d8cf}
+.portrait-doctor .portrait-hair{background:#d0d0c6}
+.portrait-doctor .portrait-body{background:#d6e0d8}
+.portrait-shepherd{background:linear-gradient(145deg,#9a927f,#586a68)}
+.portrait-shepherd .portrait-head{background:#be987c;box-shadow:-7px 4px 0 -3px #e3dfd3,7px 4px 0 -3px #e3dfd3}
+.portrait-shepherd .portrait-hair{background:#e0ded2;height:19px;top:8px}
+.portrait-shepherd .portrait-body{background:#7a6c59}
+.portrait-commander{background:linear-gradient(145deg,#8a9aa0,#3c4d5b)}
+.portrait-commander .portrait-hair{background:#30343a;clip-path:polygon(0 100%,0 0,100% 0,100% 100%)}
+.portrait-commander .portrait-body{background:#273c4e}
+.portrait-mother{background:linear-gradient(145deg,#9d9c8e,#4d6870)}
+.portrait-mother .portrait-hair{background:#7a4d3d;height:30px;top:4px;left:12px;width:47px;border-radius:45% 45% 12% 12%}
+.portrait-mother .portrait-body{background:#334b60}
+.portrait-courier{background:linear-gradient(145deg,#8aabb0,#475d68)}
+.portrait-traveler{background:linear-gradient(145deg,#a9a995,#53666c)}
+.portrait-blank{background:repeating-linear-gradient(135deg,#111b25 0 5px,#1b2a35 5px 10px)}
+.blank-noise{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font:700 13px "JetBrains Mono";color:#b7c1b5;letter-spacing:2px;text-shadow:0 0 8px #dfe9dc66}
+.portrait-double{background:linear-gradient(145deg,#9ca8a0,#34434b)}
+.double-silhouette{position:absolute;left:16px;top:9px;width:43px;height:83px;background:linear-gradient(#1b2933 0 25%,#687c80 25% 100%);clip-path:polygon(30% 0,70% 0,83% 20%,72% 36%,100% 100%,0 100%,28% 36%,17% 20%)}
+.double-label{position:absolute;bottom:5px;right:5px;padding:2px 4px;background:#9b665d;color:#fff0d9;font:8px "JetBrains Mono"}
+.dialogue-avatar.portrait-doctor{background:linear-gradient(135deg,#e5e4d6,#6d8790)}
+.dialogue-avatar.portrait-shepherd{background:linear-gradient(135deg,#d5cbb2,#685b4e)}
+.dialogue-avatar.portrait-commander{background:linear-gradient(135deg,#7e9297,#263b4c)}
+.dialogue-avatar.portrait-mystery{background:radial-gradient(circle at 50% 40%,#d7decf,#17242c 65%)}
+.dialogue-avatar.portrait-blank{background:repeating-linear-gradient(135deg,#101a24 0 4px,#283946 4px 8px)}
+@media(prefers-reduced-motion:reduce){.title-snow,.signal-light{animation:none}}
