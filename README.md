@@ -8,7 +8,9 @@ The game is a static website. Once GitHub Pages is enabled for this repository, 
 
 https://vidox-ir.github.io/ORgix-GAME/
 
-The repository includes a GitHub Actions workflow that publishes the root folder on pushes to main. In GitHub, open **Settings → Pages → Build and deployment → Source → GitHub Actions** once if Pages is not already enabled.
+The repository includes a GitHub Actions workflow that checks the JavaScript and then publishes the root folder on pushes to main.
+
+**One-time hosting setup:** open [Repository Pages settings](https://github.com/Vidox-ir/ORgix-GAME/settings/pages), then in **Build and deployment** set **Source** to **GitHub Actions** and save. The connected GitHub app can push code and run checks, but GitHub blocked it from creating the Pages site itself; this one setting must be enabled by the repository owner. After enabling it, open [the latest workflow run](https://github.com/Vidox-ir/ORgix-GAME/actions) and choose **Re-run all jobs**. When the deploy job reports success, the public game URL will be https://vidox-ir.github.io/ORgix-GAME/.
 
 For local testing, serve the repository root with any static web server, for example:
 
