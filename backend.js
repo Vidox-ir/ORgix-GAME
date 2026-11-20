@@ -2,72 +2,38 @@
   "use strict";
   const PROJECT_URL = "https://bqrqdbienrldbozohxnc.supabase.co";
   const PUBLIC_KEY = "sb_publishable_Rwz2vELW_RXflKij2FkcyA_-IAYCT5q";
-  const ENDPOINT = PROJECT_URL + "/functions/v1/ironvale-guest";
-  const SESSION_KEY = "ironvale.guest.session.v1";
-  const LOCAL_SAVE_KEY = "ironvale.local.save.v1";
-  const NICK_KEY = "ironvale.guest.nickname.v1";
+  const ENDPOINT = PROJECT_URL + "/functions/v1/borderwatch-guest";
+  const KEYS = {token:"borderwatch.session.v1",name:"borderwatch.name.v1",save:"borderwatch.save.v1"};
+  const get = key => { try { return localStorage.getItem(key); } catch { return null; } };
+  const set = (key,value) => { try { localStorage.setItem(key,value); return true; } catch { return false; } };
+  const del = key => { try { localStorage.removeItem(key); } catch {} };
 
-  function storageGet(key) {
-    try { return localStorage.getItem(key); } catch { return null; }
-  }
-  function storageSet(key, value) {
-    try { localStorage.setItem(key, value); return true; } catch { return false; }
-  }
-  function storageRemove(key) {
-    try { localStorage.removeItem(key); } catch {}
-  }
   async function call(payload) {
-    const response = await fetch(ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "apikey": PUBLIC_KEY },
-      body: JSON.stringify(payload)
+    const response = await fetch(ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":PUBLIC_KEY},
+      body:JSON.stringify(payload)
     });
-    let data = {};
-    try { data = await response.json(); } catch {}
-    if (!response.ok) {
-      const error = new Error(data.error || "ارتباط با سرور برقرار نشد.");
-      error.status = response.status;
-      throw error;
-    }
+    let data={}; try { data=await response.json(); } catch {}
+    if(!response.ok) { const error=new Error(data.error||"ارتباط با سرور انجام نشد."); error.status=response.status; throw error; }
     return data;
   }
 
-  window.IronvaleAPI = {
-    getToken() { return storageGet(SESSION_KEY); },
-    getNickname() { return storageGet(NICK_KEY); },
-    setSession(token, nickname) {
-      storageSet(SESSION_KEY, token);
-      storageSet(NICK_KEY, nickname);
+  window.BorderSave = {
+    token(){return get(KEYS.token);},
+    name(){return get(KEYS.name);},
+    setSession(token,name){set(KEYS.token,token);set(KEYS.name,name);},
+    clearSession(){del(KEYS.token);del(KEYS.name);},
+    local(){
+      try { const raw=get(KEYS.save); return raw?JSON.parse(raw):null; } catch { return null; }
     },
-    clearSession() {
-      storageRemove(SESSION_KEY);
-      storageRemove(NICK_KEY);
+    setLocal(data){try{return set(KEYS.save,JSON.stringify(data));}catch{return false;}},
+    async join(name){
+      const result=await call({action:"join",nickname:name});
+      if(!result.token)throw new Error("پاسخ سرویس مهمان نامعتبر است.");
+      this.setSession(result.token,name);return result;
     },
-    getLocalSave() {
-      try {
-        const raw = storageGet(LOCAL_SAVE_KEY);
-        return raw ? JSON.parse(raw) : null;
-      } catch { return null; }
-    },
-    setLocalSave(data) {
-      try { return storageSet(LOCAL_SAVE_KEY, JSON.stringify(data)); }
-      catch { return false; }
-    },
-    async join(nickname) {
-      const result = await call({ action: "join", nickname });
-      if (!result.token || !result.player) throw new Error("پاسخ سرور کامل نیست.");
-      this.setSession(result.token, nickname);
-      return result;
-    },
-    async load() {
-      const token = this.getToken();
-      if (!token) throw new Error("نشست مهمان پیدا نشد.");
-      return call({ action: "load", token });
-    },
-    async save(saveData) {
-      const token = this.getToken();
-      if (!token) throw new Error("نشست مهمان پیدا نشد.");
-      return call({ action: "save", token, save_data: saveData });
-    }
+    async load(){const token=this.token();if(!token)throw new Error("نشست مهمان وجود ندارد.");return call({action:"load",token});},
+    async save(saveData){const token=this.token();if(!token)throw new Error("نشست مهمان وجود ندارد.");return call({action:"save",token,save_data:saveData});}
   };
 })();
