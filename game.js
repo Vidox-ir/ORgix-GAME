@@ -50,12 +50,12 @@
     const forestPatches = [[6,8,3.2],[8,13,2.4],[22,5,2.6],[22,16,2.2]];
     for (const p of forestPatches) {
       const d = Math.hypot(x-p[0],y-p[1]);
-      if (d<p[2] && randomSeed(x,y)>.12) return "forest";
+      if (d<p[2] && (d===0 || randomSeed(x,y)>.12)) return "forest";
     }
     const rockPatches = [[19,7,2.7],[20,15,2.5],[4,17,2.0]];
     for (const p of rockPatches) {
       const d = Math.hypot(x-p[0],y-p[1]);
-      if (d<p[2] && randomSeed(x+33,y+7)>.16) return "rock";
+      if (d<p[2] && (d===0 || randomSeed(x+33,y+7)>.16)) return "rock";
     }
     return "grass";
   }
@@ -590,10 +590,10 @@
       unit.cooldown=Math.max(0,unit.cooldown-dt);
       let target=null;
       if(unit.order){
-        const close=enemies.filter(e=>dist(e,unit)<2.4).sort((a,b)=>dist(a,unit)-dist(b,unit));
+        const close=enemies.filter(e=>state.units.some(live=>live.id===e.id)&&dist(e,unit)<2.4).sort((a,b)=>dist(a,unit)-dist(b,unit));
         target=close[0]||null;
       }else if(dist(unit,keep)<7.5){
-        target=enemies.filter(e=>dist(e,keep)<8).sort((a,b)=>dist(a,unit)-dist(b,unit))[0]||null;
+        target=enemies.filter(e=>state.units.some(live=>live.id===e.id)&&dist(e,keep)<8).sort((a,b)=>dist(a,unit)-dist(b,unit))[0]||null;
       }
       if(target){
         const d=dist(unit,target);
@@ -779,7 +779,7 @@
 
   function leaveRealm(){
     saveGame(false).finally(()=>{
-      clearInterval(autosaveTimer);state=null;onlineMode=false;
+      clearInterval(autosaveTimer);if(raf)cancelAnimationFrame(raf);raf=0;state=null;onlineMode=false;
       $("gameShell").classList.add("is-hidden");$("loginScreen").classList.remove("is-hidden");
       $("nickname").value=API.getNickname()||"";lastFrame=0;
     });
@@ -875,7 +875,7 @@
     window.addEventListener("keydown",e=>{
       if(e.target&&["INPUT","TEXTAREA"].includes(e.target.tagName))return;
       keys[e.code]=true;
-      if(e.code==="Space"){e.preventDefault();if(state)togglePause();}
+      if(e.code==="Space"&&!e.repeat){e.preventDefault();if(state)togglePause();}
       if(e.code==="Escape"){
         buildMode=null;attackMode=false;setBuildButtons();$("attackButton").classList.remove("command-primary");
         if($("helpModal").classList.contains("is-hidden")){}else $("helpModal").classList.add("is-hidden");
@@ -891,7 +891,6 @@
     bindEvents();
     const nick=API.getNickname();if(nick)$("nickname").value=nick;
     resize();
-    if(!raf)raf=requestAnimationFrame(frame);
   }
   boot();
 })();
